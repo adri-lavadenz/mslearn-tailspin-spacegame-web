@@ -7,10 +7,10 @@ trigger:
 - '*'
 
 pool:
-  vmImage: 'windows-2019'
-#  name: MyPools
-#  demands:  
-  #- npm
+#  vmImage: 'windows-2019'
+  name: MyPools
+  demands:  
+  - npm
 
 variables:
   buildConfiguration: 'Release'
@@ -31,7 +31,9 @@ steps:
 - script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
   displayName: 'Compile Sass assets'
 
-- script: 'node_modules\gulp\node_modules\.bin\gulp'
+- script: |
+      which gulp
+      node_modules\gulp\node_modules\.bin\gulp
   displayName: 'gulp task'
 
 - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
