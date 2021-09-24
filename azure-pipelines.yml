@@ -7,7 +7,7 @@ trigger:
 - '*'
 
 pool:
-  vmname: 'windows-2019'
+  vmImage: 'windows-2019'
 #  name: MyPools
 #  demands:  
   #- npm
