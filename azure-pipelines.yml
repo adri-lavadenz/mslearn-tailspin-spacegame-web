@@ -7,9 +7,10 @@ trigger:
 - '*'
 
 pool:
-  name: MyPools
-  demands:  
-  - npm
+  vmname: 'windows-2019'
+#  name: MyPools
+#  demands:  
+  #- npm
 
 variables:
   buildConfiguration: 'Release'
