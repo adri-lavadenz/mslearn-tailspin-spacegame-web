@@ -38,7 +38,7 @@ steps:
 - script: 'npm install gulp --global'
   displayName: 'Install gulp'
 
-- script: 'gulp'
+- script: 'C:\Windows\ServiceProfiles\NetworkService\AppData\Roaming\npm\gulp'
   displayName: 'gulp task'
 
 #- task: gulp@1
