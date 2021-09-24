@@ -23,8 +23,9 @@ steps:
     packageType: sdk
     version: '$(dotnetSdkVersion)'
 
-- script: 'npm install -g'
-  displayName: 'Install npm globally'
+- task: Npm@1
+  inputs:
+     command: 'install'
 
 #- task: Npm@1
 #  displayName: 'Run npm install'
