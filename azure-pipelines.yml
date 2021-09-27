@@ -24,16 +24,17 @@ parameters:
     - adriana-VirtualBox
 
 
-trigger:
-- '*'
+trigger: none
 
-pool:
-  ${{ if eq(parameters.pool, true) }}:
+${{ if eq(parameters.pool, true) }}:
+  pool:
     name: MyPools
-  ${{ if eq(parameters.pool, false) }}:
+
+${{ if eq(parameters.pool, false) }}:
+  pool:
     vmImage: ${{ parameters.image }}
-  demands:  
-  - npm
+    demands:  
+    - npm
   
 
 variables:
