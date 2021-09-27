@@ -12,7 +12,7 @@ parameters:
   - windows-2019
   - ubuntu-latest
 - name: pool
-  displayName: Self-hosted agents?
+  displayName: Self-hosted agents
   type: boolean
   default: true
 - name: agent
@@ -28,13 +28,12 @@ trigger:
 - '*'
 
 pool:
-  demands:  
-  - npm
   ${{ if eq(parameters.pool, true) }}:
     name: MyPools
   ${{ if eq(parameters.pool, false) }}:
     vmImage: ${{ parameters.image }}
-
+  demands:  
+  - npm
   
 
 variables:
