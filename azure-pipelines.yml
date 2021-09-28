@@ -4,24 +4,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 parameters:
-- name: pool
-  displayName: hosted agents
+- name: useHostedAgents
+  displayName: Use Microsoft Hosted Agents?
   type: boolean
-  default: false  
-- name: image
-  displayName: Pool Image
-  type: string
-  default: ubuntu-latest
-  values:
-  - windows-2019
-  - ubuntu-latest
-- name: agent
-  displayName: My agent
-  type: string
-  default: Windows
-  values:
-    - Windows
-    - Linux
+  default: false
 
 variables:
   buildConfiguration: 'Release'
@@ -31,36 +17,43 @@ variables:
 trigger: none
 
 jobs:
-- ${{ if not(eq(parameters.pool, true)) }}:
-  - job: pool
-    displayName: Self-hosted agents pool
+  - job: buildAndPublish
     pool:
-      name: MyPools
-      demands:  
-      - ${{ if eq(parameters.agent, 'Windows') }}:
-        - agent.os -equals Windows_NT
-      - ${{ if eq(parameters.agent, 'Linux') }}:
-        - agent.os -equals Linux
-
+      ${{ if eq(parameters.useHostedAgents, false) }}:
+        name: MyPools
+      ${{ if eq(parameters.useHostedAgents, true) }}:
+        vmImage: ubuntu-latest
     steps:
-    - ${{ if eq(parameters.agent, 'Windows') }}:
-      - template: templates/set.yml
-        parameters:
-          windows: true
-    - ${{ if eq(parameters.agent, 'Linux') }}:
-      - template: templates/set.yml
-        parameters:
-          windows: false
-
-- ${{ if eq(parameters.pool, true) }}:
-  - job: pool
-    displayName: Hosted agents pool
-    pool:
-      vmImage: ${{ parameters.image }}
-      demands:  
-      - npm
-
-    steps:
-    - template: templates/set.yml
+    - task: UseDotNet@2
+      displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+      inputs:
+        packageType: sdk
+        version: '$(dotnetSdkVersion)'
+    - task: Npm@1
+      inputs:
+        customCommand: 'install --save-dev'
+    - script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
+      displayName: 'Compile Sass assets'
+    - ${{ if eq(agent.os, 'Windows_NT') }}:
+      - script: 'node_modules\gulp\node_modules\.bin\gulp'
+        displayName: 'gulp task'
+    - ${{ if eq(agent.os, 'Linux') }}:
+      - task: gulp@1
+        displayName: 'gulp task'
+    - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
+      displayName: 'Write build info'
+      workingDirectory: $(wwwrootDir)
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore project dependencies'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+    - template: templates/build.yml
       parameters:
-        windows: false
+        buildConfiguration: 'Debub'
+    - template: templates/build.yml
+      parameters:
+        buildConfiguration: 'Release'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: drop'
+      condition: succeeded()
