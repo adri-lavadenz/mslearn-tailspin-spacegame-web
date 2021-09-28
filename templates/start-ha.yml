@@ -41,13 +41,13 @@ jobs:
       command: 'restore'
       projects: '**/*.csproj'
 
-	- template: build.yml
+  - template: build.yml
 	  parameters:
-		buildConfiguration: 'Debub'
+		  buildConfiguration: 'Debub'
 
 	- template: build.yml
 	  parameters:
-		buildConfiguration: 'Release'
+		  buildConfiguration: 'Release'
 
 	- task: PublishBuildArtifacts@1
 	  displayName: 'Publish Artifact: drop'
