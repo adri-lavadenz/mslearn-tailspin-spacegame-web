@@ -4,24 +4,10 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 parameters:
-- name: image
-  displayName: Pool Image
-  type: string
-  default: ubuntu-latest
-  values:
-  - windows-2019
-  - ubuntu-latest
 - name: pool
   displayName: hosted agents
   type: boolean
-  default: false
-- name: agent
-  displayName: My agent
-  type: string
-  default: ALAVADENZM-DH01
-  values:
-    - ALAVADENZM-DH01
-    - adriana-VirtualBox
+  default: false  
 
 variables:
   buildConfiguration: 'Release'
@@ -30,40 +16,12 @@ variables:
 
 trigger: none
 
-pool:
-  vmImage: ${{ parameters.image }}
-  #name: MyPools
-  demands:  
-  - npm
-
-
-
 steps:
-- task: UseDotNet@2
-  displayName: 'Use .NET SDK $(dotnetSdkVersion)'
-  inputs:
-    packageType: sdk
-    version: '$(dotnetSdkVersion)'
+- ${{ if not(eq(parameters.pool, true)) }}:
+  - template: templates/start.yml
 
-- task: Npm@1
-  inputs:
-     customCommand: 'install --save-dev'
-
-- script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
-  displayName: 'Compile Sass assets'
-
-- script: 'node_modules\gulp\node_modules\.bin\gulp'
-  displayName: 'gulp task'
-
-- script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
-  displayName: 'Write build info'
-  workingDirectory: $(wwwrootDir)
-
-- task: DotNetCoreCLI@2
-  displayName: 'Restore project dependencies'
-  inputs:
-    command: 'restore'
-    projects: '**/*.csproj'
+- ${{ if eq(parameters.pool, true) }}:
+  - template: templates/start-ha.yml
 
 - template: templates/build.yml
   parameters:
