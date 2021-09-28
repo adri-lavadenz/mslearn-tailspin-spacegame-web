@@ -43,11 +43,13 @@ jobs:
         - agent.os -equals Linux
 
     steps:
-    - template: templates/set.yml
-      parameters:
-        - ${{ if eq(parameters.agent, 'Windows') }}:
+    - ${{ if eq(parameters.agent, 'Windows') }}:
+      - template: templates/set.yml
+        parameters:
           windows: true
-        - ${{ if eq(parameters.agent, 'Linux') }}:
+    - ${{ if eq(parameters.agent, 'Linux') }}:
+      - template: templates/set.yml
+        parameters:
           windows: false
 
 - ${{ if eq(parameters.pool, true) }}:
