@@ -43,12 +43,12 @@ jobs:
 
   - template: build.yml
     parameters:
-		  buildConfiguration: 'Debub'
+      buildConfiguration: 'Debub'
 
   - template: build.yml
     parameters:
       buildConfiguration: 'Release'
 
-	- task: PublishBuildArtifacts@1
-	  displayName: 'Publish Artifact: drop'
-	  condition: succeeded()
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish Artifact: drop'
+    condition: succeeded()
