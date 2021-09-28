@@ -12,9 +12,9 @@ parameters:
   - windows-2019
   - ubuntu-latest
 - name: pool
-  displayName: Self-hosted agents
+  displayName: hosted agents
   type: boolean
-  default: true
+  default: false
 - name: agent
   displayName: My agent
   type: string
@@ -23,24 +23,20 @@ parameters:
     - ALAVADENZM-DH01
     - adriana-VirtualBox
 
-
-trigger: none
-
-${{ if eq(parameters.pool, true) }}:
-  pool:
-    name: MyPools
-
-${{ if eq(parameters.pool, false) }}:
-  pool:
-    vmImage: ${{ parameters.image }}
-    demands:  
-    - npm
-  
-
 variables:
   buildConfiguration: 'Release'
   wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
   dotnetSdkVersion: '5.x'
+
+trigger: none
+
+pool:
+  vmImage: ${{ parameters.image }}
+  #name: MyPools
+  demands:  
+  - npm
+
+
 
 steps:
 - task: UseDotNet@2
