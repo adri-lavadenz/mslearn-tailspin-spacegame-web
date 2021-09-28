@@ -42,12 +42,12 @@ jobs:
       projects: '**/*.csproj'
 
   - template: build.yml
-	  parameters:
+    parameters:
 		  buildConfiguration: 'Debub'
 
-	- template: build.yml
-	  parameters:
-		  buildConfiguration: 'Release'
+  - template: build.yml
+    parameters:
+      buildConfiguration: 'Release'
 
 	- task: PublishBuildArtifacts@1
 	  displayName: 'Publish Artifact: drop'

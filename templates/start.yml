@@ -11,10 +11,10 @@ jobs:
 - job: build
   displayName: Self-hosted agents
   pool:
-	name: MyPools
-	demands:  
-	- ${{ if eq(parameters.agent, 'ALAVADENZM-DH01') }}:
-		- name -equals myhost
+    name: MyPools
+    demands:  
+    - ${{ if eq(parameters.agent, 'ALAVADENZM-DH01') }}:
+      - name -equals myhost
 
 
   steps:
