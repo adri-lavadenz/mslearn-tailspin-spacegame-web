@@ -42,6 +42,41 @@ jobs:
       - ${{ if eq(parameters.agent, 'Linux') }}:
         - agent.os -equals Linux
 
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+      inputs:
+        packageType: sdk
+        version: '$(dotnetSdkVersion)'
+    - task: Npm@1
+      inputs:
+        customCommand: 'install --save-dev'
+    - script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
+      displayName: 'Compile Sass assets'
+    - ${{ if eq(parameters.agent, 'Windows') }}:
+      - script: 'node_modules\gulp\node_modules\.bin\gulp'
+        displayName: 'gulp task'
+    - ${{ if not(eq(parameters.agent, 'Windows')) }}:
+      - task: gulp@1
+        displayName: 'gulp task'
+    - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
+      displayName: 'Write build info'
+      workingDirectory: $(wwwrootDir)
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore project dependencies'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+    - template: templates/build.yml
+      parameters:
+        buildConfiguration: 'Debub'
+    - template: templates/build.yml
+      parameters:
+        buildConfiguration: 'Release'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: drop'
+      condition: succeeded()
+
 - ${{ if eq(parameters.pool, true) }}:
   - job: pool
     displayName: Hosted agents pool
@@ -49,40 +84,35 @@ jobs:
       vmImage: ${{ parameters.image }}
       demands:  
       - npm
-- job: build
-  steps:
-  - task: UseDotNet@2
-    displayName: 'Use .NET SDK $(dotnetSdkVersion)'
-    inputs:
-      packageType: sdk
-      version: '$(dotnetSdkVersion)'
-  - task: Npm@1
-    inputs:
-      customCommand: 'install --save-dev'
-  - script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
-    displayName: 'Compile Sass assets'
-  - ${{ if eq(parameters.agent, 'Windows') }}:
-    - ${{ if not(eq(parameters.pool, true)) }}:
-      - script: 'node_modules\gulp\node_modules\.bin\gulp'
-        displayName: 'gulp task'
-  - ${{ if not(eq(parameters.agent, 'Windows')) }}:
+
+    steps:
+    - task: UseDotNet@2
+      displayName: 'Use .NET SDK $(dotnetSdkVersion)'
+      inputs:
+        packageType: sdk
+        version: '$(dotnetSdkVersion)'
+    - task: Npm@1
+      inputs:
+        customCommand: 'install --save-dev'
+    - script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
+      displayName: 'Compile Sass assets'
     - task: gulp@1
       displayName: 'gulp task'
-  - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
-    displayName: 'Write build info'
-    workingDirectory: $(wwwrootDir)
-  - task: DotNetCoreCLI@2
-    displayName: 'Restore project dependencies'
-    inputs:
-      command: 'restore'
-      projects: '**/*.csproj'
-  - template: templates/build.yml
-    parameters:
-      buildConfiguration: 'Debub'
-  - template: templates/build.yml
-    parameters:
-      buildConfiguration: 'Release'
-  - task: PublishBuildArtifacts@1
-    displayName: 'Publish Artifact: drop'
-    condition: succeeded()
+    - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
+      displayName: 'Write build info'
+      workingDirectory: $(wwwrootDir)
+    - task: DotNetCoreCLI@2
+      displayName: 'Restore project dependencies'
+      inputs:
+        command: 'restore'
+        projects: '**/*.csproj'
+    - template: templates/build.yml
+      parameters:
+        buildConfiguration: 'Debub'
+    - template: templates/build.yml
+      parameters:
+        buildConfiguration: 'Release'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: drop'
+      condition: succeeded()
 
