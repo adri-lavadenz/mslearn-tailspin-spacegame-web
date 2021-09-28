@@ -1,4 +1,4 @@
-parameteres:
+parameters:
 - name: windows
   displayName: My windows agent
   type: boolean
