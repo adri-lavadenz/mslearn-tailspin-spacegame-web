@@ -7,7 +7,7 @@ parameters:
   - windows-2019
   - ubuntu-latest
 
-- job: Hosted agents
+job: Hosted agents
   pool:
     vmImage: ${{ parameters.image }}
     demands:  
