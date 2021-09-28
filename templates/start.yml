@@ -2,10 +2,10 @@ parameters:
 - name: agent
   displayName: My agent
   type: string
-  default: ALAVADENZM-DH01
+  default: Windows
   values:
-    - ALAVADENZM-DH01
-    - adriana-VirtualBox
+    - Windows
+    - Linux
 
 jobs:
 - job: build
@@ -14,9 +14,9 @@ jobs:
     name: MyPools
     demands:  
     - ${{ if eq(parameters.agent, 'ALAVADENZM-DH01') }}:
-      - name -equals myhost
+      - Agent.OS -equals Windows_NT
     - ${{ if eq(parameters.agent, 'adriana-VirtualBox') }}:
-      - myagent -equals myubuntu
+      - Agent.OS -equals Linux
 
   steps:
   - task: UseDotNet@2

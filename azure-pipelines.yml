@@ -18,10 +18,10 @@ parameters:
 - name: agent
   displayName: My agent
   type: string
-  default: ALAVADENZM-DH01
+  default: Windows
   values:
-    - ALAVADENZM-DH01
-    - adriana-VirtualBox
+    - Windows
+    - Linux
 
 variables:
   buildConfiguration: 'Release'
