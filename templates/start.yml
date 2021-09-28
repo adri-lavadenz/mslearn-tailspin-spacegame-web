@@ -15,7 +15,7 @@ jobs:
     demands:  
     - ${{ if eq(parameters.agent, 'ALAVADENZM-DH01') }}:
       - name -equals myhost
-	- ${{ if eq(parameters.agent, 'adriana-VirtualBox') }}:
+    - ${{ if eq(parameters.agent, 'adriana-VirtualBox') }}:
       - myagent -equals myubuntu
 
   steps:
