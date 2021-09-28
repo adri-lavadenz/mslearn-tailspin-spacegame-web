@@ -8,6 +8,20 @@ parameters:
   displayName: hosted agents
   type: boolean
   default: false  
+- name: image
+  displayName: Pool Image
+  type: string
+  default: ubuntu-latest
+  values:
+  - windows-2019
+  - ubuntu-latest
+- name: agent
+  displayName: My agent
+  type: string
+  default: ALAVADENZM-DH01
+  values:
+    - ALAVADENZM-DH01
+    - adriana-VirtualBox
 
 variables:
   buildConfiguration: 'Release'
@@ -16,21 +30,14 @@ variables:
 
 trigger: none
 
-steps:
+jobs:
 - ${{ if not(eq(parameters.pool, true)) }}:
   - template: templates/start.yml
+    parameters:
+      agent: ${{ parameters.agent }}
 
 - ${{ if eq(parameters.pool, true) }}:
   - template: templates/start-ha.yml
+    parameters:
+      image: ${{ parameters.image }}
 
-- template: templates/build.yml
-  parameters:
-    buildConfiguration: 'Debub'
-
-- template: templates/build.yml
-  parameters:
-    buildConfiguration: 'Release'
-
-- task: PublishBuildArtifacts@1
-  displayName: 'Publish Artifact: drop'
-  condition: succeeded()

@@ -7,12 +7,13 @@ parameters:
     - ALAVADENZM-DH01
     - adriana-VirtualBox
 
+jobs:
 - job: Self-hosted agents
 	pool:
 		name: MyPools
 		demands:  
 		- ${{ if eq(parameters.agent, 'ALAVADENZM-DH01') }}:
-			- agent.name -equals myhost
+			- name -equals myhost
 
 
 	steps:
@@ -46,3 +47,15 @@ parameters:
 		inputs:
 			command: 'restore'
 			projects: '**/*.csproj'
+
+	- template: build.yml
+	  parameters:
+		buildConfiguration: 'Debub'
+
+	- template: build.yml
+	  parameters:
+		buildConfiguration: 'Release'
+
+	- task: PublishBuildArtifacts@1
+	  displayName: 'Publish Artifact: drop'
+	  condition: succeeded()

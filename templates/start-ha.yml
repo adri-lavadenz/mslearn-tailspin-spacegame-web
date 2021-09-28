@@ -7,7 +7,8 @@ parameters:
   - windows-2019
   - ubuntu-latest
 
-job: Hosted agents
+jobs:
+- job: Hosted agents
   pool:
     vmImage: ${{ parameters.image }}
     demands:  
@@ -39,3 +40,15 @@ job: Hosted agents
     inputs:
       command: 'restore'
       projects: '**/*.csproj'
+
+	- template: build.yml
+	  parameters:
+		buildConfiguration: 'Debub'
+
+	- template: build.yml
+	  parameters:
+		buildConfiguration: 'Release'
+
+	- task: PublishBuildArtifacts@1
+	  displayName: 'Publish Artifact: drop'
+	  condition: succeeded()
