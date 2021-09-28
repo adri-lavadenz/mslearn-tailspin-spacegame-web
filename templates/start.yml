@@ -16,24 +16,23 @@ jobs:
     - ${{ if eq(parameters.agent, 'ALAVADENZM-DH01') }}:
       - name -equals myhost
 
-
   steps:
   - task: UseDotNet@2
     displayName: 'Use .NET SDK $(dotnetSdkVersion)'
     inputs:
-	  packageType: sdk
-	  version: '$(dotnetSdkVersion)'
+      packageType: sdk
+      version: '$(dotnetSdkVersion)'
   - task: Npm@1
     inputs:
-	  customCommand: 'install --save-dev'
+      customCommand: 'install --save-dev'
   - script: './node_modules/.bin/node-sass $(wwwrootDir) --output $(wwwrootDir)'
     displayName: 'Compile Sass assets'
   - ${{ if eq(parameters.agent, 'ALAVADENZM-DH01') }}:
     - script: 'node_modules\gulp\node_modules\.bin\gulp'
-	  displayName: 'gulp task'
+      displayName: 'gulp task'
   - ${{ if not(eq(parameters.agent, 'ALAVADENZM-DH01')) }}:
     - task: gulp@1
-	  displayName: 'gulp task'
+      displayName: 'gulp task'
   - script: 'echo "$(Build.DefinitionName), $(Build.BuildId), $(Build.BuildNumber)" > buildinfo.txt'
     displayName: 'Write build info'
     workingDirectory: $(wwwrootDir)
