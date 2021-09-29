@@ -48,10 +48,10 @@ jobs:
       inputs:
         command: 'restore'
         projects: '**/*.csproj'
-    - template: pipelineTemplate/build.yml
+    - template: templates/build.yml
       parameters:
         buildConfiguration: 'Debub'
-    - template: pipelineTemplate/build.yml
+    - template: templates/build.yml
       parameters:
         buildConfiguration: 'Release'
     - task: PublishBuildArtifacts@1
