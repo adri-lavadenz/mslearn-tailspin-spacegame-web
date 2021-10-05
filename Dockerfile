@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine
+FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine AS build
  
 
 EXPOSE 5000
@@ -29,16 +29,14 @@ RUN dotnet restore
 # Copy everything else and build
 RUN dotnet publish -c Debug -o out
 RUN dotnet publish -c Release -o out
-ENTRYPOINT ["dotnet", "/app/Tailspin.SpaceGame.Web/bin/Debug/net5.0/Tailspin.SpaceGame.Web.dll"]
 
 #RUN dotnet run --configuration Release --no-build --project Tailspin.SpaceGame.Web
 
 # Build runtime image
 
 # final stage/image
-#FROM mcr.microsoft.com/dotnet/runtime:6.0-alpine-amd64
+FROM mcr.microsoft.com/dotnet/sdk:5.0-alpine 
 
-#WORKDIR /app
-#COPY --from=build /app .
-#ENTRYPOINT ["dotnet", "Tailspin.SpaceGame.Web.dll"]
-#RUN dotnet run --configuration Release --no-build --project Tailspin.SpaceGame.Web
+WORKDIR /app
+COPY --from=build /app .
+ENTRYPOINT ["dotnet", "/app/Tailspin.SpaceGame.Web/bin/Debug/net5.0/Tailspin.SpaceGame.Web.dll"]
