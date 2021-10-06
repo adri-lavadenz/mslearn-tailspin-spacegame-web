@@ -14,6 +14,12 @@ variables:
   wwwrootDir: 'Tailspin.SpaceGame.Web/wwwroot'
   dotnetSdkVersion: '5.x'
 
+resources:
+  repositories:
+    - repository: templates
+      type: github
+      name: adri-lavadenz/pipelineTemplate
+
 trigger: none
 
 jobs:
@@ -48,10 +54,10 @@ jobs:
       inputs:
         command: 'restore'
         projects: '**/*.csproj'
-    - template: templates/build.yml
+    - template: build.yml@templates
       parameters:
         buildConfiguration: 'Debub'
-    - template: templates/build.yml
+    - template: build.yml@templates
       parameters:
         buildConfiguration: 'Release'
     - task: PublishBuildArtifacts@1
