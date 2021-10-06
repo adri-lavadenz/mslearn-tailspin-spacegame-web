@@ -19,7 +19,6 @@ resources:
     - repository: templates
       type: github
       name: adri-lavadenz/pipelineTemplate
-      endpoint: myServiceConnection # Azure DevOps service connection
 
 trigger: none
 
