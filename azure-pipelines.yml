@@ -66,7 +66,7 @@ jobs:
       condition: succeeded()
   - job: containerPublish
     pool:
-        name: MyPools
+        vmImage: ubuntu-latest
     steps:
     - task: Docker@2
       displayName: Login to ACR
