@@ -77,7 +77,7 @@ jobs:
       displayName: Build and Push
       inputs:
         command: buildAndPush
-        containerRegistry: dockerRegistryServiceConnection1
+        containerRegistry: jalaregistry
         repository: mslearn-tailspin-spacegame-web
         tags: latest
     - task: Docker@2
